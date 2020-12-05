@@ -3,6 +3,7 @@ from collections import OrderedDict
 from typing import Dict
 
 import requests
+from requests import Response
 
 from exceptions import RequestLimitExceededError, UnknownResponseCodeError, UnknownErrorWhenRequestError
 from settings import URL_GITHUB_API, DEFAULT_BRANCH
@@ -21,7 +22,7 @@ class Base:
         self.end_date_analysis = kwargs.get('end_date_analysis')
         self.repository_name = '/'.join(self.url_public_repository.split('/')[3:5])
 
-    def get_requests(self, url: str, params: Dict = None):
+    def get_requests(self, url: str, params: Dict = None) -> Response:
         try:
             response = requests.get(url=url, params=params)
         except Exception as e:
@@ -34,7 +35,7 @@ class Base:
         raise UnknownResponseCodeError(f'Получен не известный код ответа от github api. '
                                        f'status_code:{response.status_code}, message{response.json()["message"]}')
 
-    def get_query_params(self, *args, **kwargs):
+    def get_query_params(self, *args, **kwargs) -> str:
         params = [
             f'{i}:{j}' for i, j in kwargs.items()
         ]
@@ -44,12 +45,12 @@ class Base:
 
         return '?q=' + '+'.join(params)
 
-    def get_start_date_analysis(self):
+    def get_start_date_analysis(self) -> str:
         if self.start_date_analysis:
             return self.start_date_analysis.strftime("%Y-%m-%d")
         return '*'
 
-    def get_end_date_analysis(self):
+    def get_end_date_analysis(self) -> str:
         if self.end_date_analysis:
             return self.end_date_analysis.strftime("%Y-%m-%d")
         return '*'
@@ -114,7 +115,7 @@ class CountPullRequests(Base):
         self.branch_repository = kwargs.pop('branch_repository')
         super().__init__(*args, **kwargs)
 
-    def count_old_pr(self):
+    def count_old_pr(self) -> None:
         query_params = {
             'state': 'open',
             'is': 'pr',
@@ -124,7 +125,7 @@ class CountPullRequests(Base):
         count_old_pr = self._get_count_pull_requests(query_params=query_params)
         print('Количество старых pull requests =', count_old_pr)
 
-    def count_open_and_closed_pr(self):
+    def count_open_and_closed_pr(self) -> None:
         count_open_pr = self._get_count_pull_requests(query_params=self._get_query_params_for_count_open_pr())
         count_closed_pr = self._get_count_pull_requests(query_params=self._get_query_params_for_count_closed_pr())
         print('Количество открытых pull requests =', count_open_pr)
@@ -166,7 +167,7 @@ class CountIssues(Base):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def count_old_issue(self):
+    def count_old_issue(self) -> None:
         query_params = {
             'state': 'open',
             'is': 'issue',
@@ -175,7 +176,7 @@ class CountIssues(Base):
         count_old_pr = self._get_count_pull_requests(query_params=query_params)
         print('Количество старых issue =', count_old_pr)
 
-    def count_open_and_closed_issue(self):
+    def count_open_and_closed_issue(self) -> None:
         count_open_issue = self._get_count_pull_requests(query_params=self._get_query_params_for_count_open_issue())
         count_closed_issue = self._get_count_pull_requests(query_params=self._get_query_params_for_count_closed_issue())
         print('Количество открытых issue =', count_open_issue)

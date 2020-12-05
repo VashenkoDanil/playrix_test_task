@@ -1,6 +1,7 @@
 import sys
 from argparse import ArgumentParser
 from datetime import datetime
+from typing import Dict
 
 from exceptions import InvalidDateFormatError
 from settings import DEFAULT_BRANCH
@@ -22,7 +23,7 @@ def create_parser() -> ArgumentParser:
     return parser
 
 
-def get_params():
+def get_params() -> Dict[str, any]:
     parser = create_parser()
     arguments = parser.parse_args(sys.argv[1:])
     return {
