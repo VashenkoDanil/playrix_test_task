@@ -1,4 +1,4 @@
-from helpers import get_params
+from helpers import get_arguments
 from service.github_api import MostActiveParticipant, CountPullRequests, CountIssues
 from datetime import datetime
 
@@ -54,10 +54,10 @@ def count_old_issues(url_public_repository: str,
 
 
 if __name__ == '__main__':
-    params = get_params()
+    arguments = get_arguments()
 
-    most_active_participant(**params)
-    count_pull_requests(**params)
-    count_old_pull_requests(**params)
-    count_issues(**params)
-    count_old_issues(**params)
+    most_active_participant(**arguments)
+    count_pull_requests(**arguments)
+    count_old_pull_requests(**arguments)
+    count_issues(**arguments)
+    count_old_issues(**arguments)

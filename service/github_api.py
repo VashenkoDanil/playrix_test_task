@@ -6,7 +6,7 @@ import requests
 from requests import Response
 
 from exceptions import RequestLimitExceededError, UnknownResponseCodeError, UnknownErrorWhenRequestError
-from settings import URL_GITHUB_API, DEFAULT_BRANCH
+from settings import URL_GITHUB_API, DEFAULT_BRANCH, URL_PATH_REPOSITORIES_COMMITS, URL_PATH_SEARCH_ISSUES
 
 
 class Base:
@@ -64,7 +64,7 @@ class MostActiveParticipant(Base):
         if kwargs.get('branch_repository'):
             self.branch_repository = kwargs.pop('branch_repository')
         super().__init__(*args, **kwargs)
-        self.url_path = f'/repos/{self.repository_name}/commits'
+        self.url_path = URL_PATH_REPOSITORIES_COMMITS.format(self.repository_name)
 
     def __call__(self, *args, **kwargs):
         active_participants = self._get_list_active_participants()
@@ -108,7 +108,7 @@ class MostActiveParticipant(Base):
 
 
 class CountPullRequests(Base):
-    url_path: str = '/search/issues'
+    url_path: str = URL_PATH_SEARCH_ISSUES
     branch_repository: str = DEFAULT_BRANCH
 
     def __init__(self, *args, **kwargs):
@@ -162,7 +162,7 @@ class CountPullRequests(Base):
 
 
 class CountIssues(Base):
-    url_path = '/search/issues'
+    url_path: str = URL_PATH_SEARCH_ISSUES
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

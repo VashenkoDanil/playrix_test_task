@@ -23,7 +23,7 @@ def create_parser() -> ArgumentParser:
     return parser
 
 
-def get_params() -> Dict[str, any]:
+def get_arguments() -> Dict[str, any]:
     parser = create_parser()
     arguments = parser.parse_args(sys.argv[1:])
     return {
